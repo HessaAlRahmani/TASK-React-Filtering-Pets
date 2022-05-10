@@ -1,8 +1,21 @@
+import { useState } from "react";
 import pets from "../petsData";
 import PetItem from "./PetItem";
 
 function PetsList() {
-  const petList = pets.map((pet) => <PetItem pet={pet} key={pet.id} />);
+  const [query, setQuery] = useState("");
+  const addedInput = (input) => setQuery(input);
+
+  const [type, setType] = useState("");
+  const changedType = (input) => setType(input);
+
+  const filterList = pets.filter((pet) =>
+    pet.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const typeList = filterList.filter((pet) => pet.type.includes(type));
+
+  const petList = typeList.map((pet) => <PetItem pet={pet} key={pet.id} />);
 
   return (
     <section id="doctors" className="doctor-section pt-140">
@@ -15,6 +28,7 @@ function PetsList() {
               </h1>
               <div className="input-group rounded">
                 <input
+                  onChange={(event) => addedInput(event.target.value)}
                   type="search"
                   className="form-control rounded"
                   placeholder="Search"
@@ -24,7 +38,10 @@ function PetsList() {
               </div>
               <br />
               Type:
-              <select className="form-select">
+              <select
+                className="form-select"
+                onChange={(event) => changedType(event.target.value)}
+              >
                 <option value="" selected>
                   All
                 </option>
